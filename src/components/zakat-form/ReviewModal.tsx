@@ -6,6 +6,7 @@ import { ZakatFormData } from "@/types/ZakatTypes";
 import { format } from "date-fns";
 import { formatCurrency } from "@/utils/formatters";
 import { Edit, Check } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -35,9 +36,11 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
         </DialogHeader>
         
         <div className="py-4">
-          <p className="text-muted-foreground text-sm mb-6 bg-blue-50 border border-blue-100 p-3 rounded-md">
-            Mohon periksa kembali data yang telah dimasukkan sebelum melanjutkan proses pengiriman.
-          </p>
+          <Alert className="mb-6 bg-red-50 border border-red-200">
+            <AlertDescription className="text-red-600 font-medium">
+              Mohon periksa kembali data yang telah dimasukkan sebelum melanjutkan proses pengiriman.
+            </AlertDescription>
+          </Alert>
           
           <div className="space-y-6">
             {/* Basic Info Section */}
