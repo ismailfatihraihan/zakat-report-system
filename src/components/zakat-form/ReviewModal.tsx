@@ -30,8 +30,77 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
         
         <div className="py-4">
           <Alert className="mb-6 bg-red-50 border border-red-200">
-            <AlertDescription className="text-red-600 font-extrabold ">MOHON PERIKSA KEMBALI DATA YANG SUDAH DIINPUT MEH TE NGAGAWEKEN, SUPAYA TIDAK CAPEK DUA KALI. 
--KETUA</AlertDescription>
+            <AlertDescription className="text-red-600 font-extrabold ">Review Data Zakat
+MOHON PERIKSA KEMBALI DATA YANG SUDAH DIINPUT MEH TE NGAGAWEKEN, SUPAYA TIDAK CAPEK DUA KALI.
+- KETUA
+Informasi Dasar
+Penginput:
+
+Hasbi
+
+Tanggal:
+
+30 March 2025
+
+Nama:
+
+abc
+
+Alamat:
+
+abc
+
+Zakat Fitrah
+Jiwa Beras:
+
+0 jiwa
+
+Beras (kg):
+
+0 kg
+
+Jiwa Uang:
+
+3 jiwa
+
+Uang:
+
+Rp 112.500
+
+Zakat Maal
+Jumlah:
+
+Rp 0
+
+Infaq
+Beras:
+
+0 kg
+
+Uang:
+
+Rp 0
+
+Fidyah
+Beras:
+
+0 kg
+
+Uang:
+
+Rp 0
+
+Total Beras:
+
+0.00 kg
+
+Total Uang:
+
+Rp 112.500
+
+Edit
+Konfirmasi
+Close</AlertDescription>
           </Alert>
           
           <div className="space-y-6">
