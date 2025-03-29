@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,6 @@ import { format } from "date-fns";
 import { formatCurrency } from "@/utils/formatters";
 import { Edit, Check } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
 interface ReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,21 +13,16 @@ interface ReviewModalProps {
   onEdit: () => void;
   formData: ZakatFormData;
 }
-
 const ReviewModal: React.FC<ReviewModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
   onEdit,
-  formData,
+  formData
 }) => {
   // Format date for display
-  const formattedDate = formData.tanggal
-    ? format(new Date(formData.tanggal), "dd MMMM yyyy")
-    : "";
-
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+  const formattedDate = formData.tanggal ? format(new Date(formData.tanggal), "dd MMMM yyyy") : "";
+  return <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md md:max-w-lg lg:max-w-2xl overflow-y-auto max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-xl md:text-2xl font-semibold">Review Data Zakat</DialogTitle>
@@ -37,9 +30,8 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
         
         <div className="py-4">
           <Alert className="mb-6 bg-red-50 border border-red-200">
-            <AlertDescription className="text-red-600 font-medium">
-              Mohon periksa kembali data yang telah dimasukkan sebelum melanjutkan proses pengiriman.
-            </AlertDescription>
+            <AlertDescription className="text-red-600 font-extrabold ">MOHON PERIKSA KEMBALI DATA YANG SUDAH DIINPUT MEH TE NGAGAWEKEN, SUPAYA TIDAK CAPEK DUA KALI. 
+-KETUA</AlertDescription>
           </Alert>
           
           <div className="space-y-6">
@@ -134,22 +126,13 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
                 <div>
                   <span className="text-sm font-medium">Total Beras:</span>
                   <p className="text-lg font-semibold">
-                    {(
-                      formData.zakatFitrah.berasKg + 
-                      formData.infaq.beras + 
-                      formData.fidyah.beras
-                    ).toFixed(2)} kg
+                    {(formData.zakatFitrah.berasKg + formData.infaq.beras + formData.fidyah.beras).toFixed(2)} kg
                   </p>
                 </div>
                 <div>
                   <span className="text-sm font-medium">Total Uang:</span>
                   <p className="text-lg font-semibold">
-                    {formatCurrency(
-                      formData.zakatFitrah.uang + 
-                      formData.zakatMaal + 
-                      formData.infaq.uang +
-                      formData.fidyah.uang
-                    )}
+                    {formatCurrency(formData.zakatFitrah.uang + formData.zakatMaal + formData.infaq.uang + formData.fidyah.uang)}
                   </p>
                 </div>
               </div>
@@ -158,23 +141,14 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
         </div>
         
         <DialogFooter className="sm:justify-between">
-          <Button
-            variant="outline"
-            onClick={onEdit}
-            className="w-full sm:w-auto flex items-center gap-2"
-          >
+          <Button variant="outline" onClick={onEdit} className="w-full sm:w-auto flex items-center gap-2">
             <Edit className="h-4 w-4" /> Edit
           </Button>
-          <Button
-            onClick={onConfirm}
-            className="w-full sm:w-auto flex items-center gap-2 bg-primary"
-          >
+          <Button onClick={onConfirm} className="w-full sm:w-auto flex items-center gap-2 bg-primary">
             <Check className="h-4 w-4" /> Konfirmasi
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>;
 };
-
 export default ReviewModal;
