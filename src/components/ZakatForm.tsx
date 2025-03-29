@@ -5,6 +5,7 @@ import { ZakatRecord } from "@/types/ZakatTypes";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useZakatForm } from "@/hooks/useZakatForm";
+import ReviewModal from "./zakat-form/ReviewModal";
 
 // Import form section components
 import BasicInfoSection from "./zakat-form/BasicInfoSection";
@@ -26,10 +27,13 @@ const ZakatForm: React.FC<ZakatFormProps> = ({ initialData, isEdit = false }) =>
     formData,
     zakatFitrahRate,
     isSubmitting,
+    showReviewModal,
     handleInputChange,
     handleSelectChange,
     handleRateChange,
     handleSubmit,
+    handleConfirmSubmit,
+    handleCloseReviewModal,
     handleReset
   } = useZakatForm({ initialData, isEdit });
   
@@ -96,6 +100,15 @@ const ZakatForm: React.FC<ZakatFormProps> = ({ initialData, isEdit = false }) =>
           />
         </div>
       </form>
+
+      {/* Review Modal */}
+      <ReviewModal 
+        isOpen={showReviewModal}
+        onClose={handleCloseReviewModal}
+        onConfirm={handleConfirmSubmit}
+        onEdit={handleCloseReviewModal}
+        formData={formData}
+      />
     </div>
   );
 };

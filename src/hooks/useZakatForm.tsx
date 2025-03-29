@@ -21,17 +21,23 @@ export const useZakatForm = ({
   
   const {
     isSubmitting,
-    handleSubmit
+    showReviewModal,
+    handleSubmit,
+    handleConfirmSubmit,
+    handleCloseReviewModal
   } = useFormSubmission(formData, initialData, isEdit);
 
   return {
     formData,
     zakatFitrahRate,
     isSubmitting,
+    showReviewModal,
     handleInputChange,
     handleSelectChange,
     handleRateChange,
     handleSubmit,
+    handleConfirmSubmit,
+    handleCloseReviewModal,
     handleReset
   };
 };

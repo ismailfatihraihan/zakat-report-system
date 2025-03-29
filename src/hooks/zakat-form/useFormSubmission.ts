@@ -12,10 +12,17 @@ export const useFormSubmission = (
 ) => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
   
-  // Handle form submission
+  // Handle form review before actual submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Show review modal instead of submitting immediately
+    setShowReviewModal(true);
+  };
+
+  // Handle actual submission after review confirmation
+  const handleConfirmSubmit = async () => {
     setIsSubmitting(true);
     
     try {
@@ -38,11 +45,20 @@ export const useFormSubmission = (
       toast.error("An error occurred while saving the record");
     } finally {
       setIsSubmitting(false);
+      setShowReviewModal(false);
     }
+  };
+
+  // Close review modal
+  const handleCloseReviewModal = () => {
+    setShowReviewModal(false);
   };
 
   return {
     isSubmitting,
-    handleSubmit
+    showReviewModal,
+    handleSubmit,
+    handleConfirmSubmit,
+    handleCloseReviewModal
   };
 };
