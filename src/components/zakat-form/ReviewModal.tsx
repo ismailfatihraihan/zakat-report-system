@@ -30,7 +30,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
         
         <div className="py-4">
           <Alert className="mb-6 bg-red-50 border border-red-200">
-            <AlertDescription className="text-red-600 font-semibold ">MOHON PERIKSA KEMBALI DATA YANG SUDAH DIINPUT MEH TE NGAGAWEKEN, SUPAYA TIDAK CAPEK DUA KALI. 
+            <AlertDescription className="text-red-600 font-semibold ">MOHON PERIKSA KEMBALI DATA YANG SUDAH DIINPUT MEH TE NGAGAWEKEN, SUPAYA TIDAK CAPEK DUA KALI, TANGGUNG JAWAB DUNIA AKHERAT. 
 -KETUA</AlertDescription>
           </Alert>
           
