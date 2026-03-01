@@ -1,20 +1,29 @@
 # 🌙 Zakat Report System
 
-Sistem manajemen dan pelaporan zakat berbasis web yang dibangun dengan React, TypeScript, dan Supabase. Aplikasi ini memudahkan pengelolaan berbagai jenis zakat termasuk Zakat Fitrah, Zakat Maal, Fidyah, dan Infaq/Sedekah.
+A web-based zakat management and reporting system built with **React**, **TypeScript**, and **Supabase**. This app simplifies the process of recording and managing various types of Islamic charitable contributions including Zakat Fitrah, Zakat Maal, Fidyah, and Infaq/Sedekah.
 
-## Fitur Utama
+![Dashboard Preview](https://github.com/user-attachments/assets/c028ddde-97e5-4b8c-90ea-e999dd1b0c16)
+![App Preview](https://github.com/user-attachments/assets/539d1b22-e178-4bab-b7fc-20cc2811a365)
 
--  **Dashboard Interaktif** - Visualisasi data dengan summary cards dan charts
--  **Multi-Jenis Zakat** - Support untuk Zakat Fitrah, Zakat Maal, Fidyah, dan Infaq
--  **CRUD Operations** - Tambah, edit, lihat, dan hapus catatan zakat
--  **Export Data** - Export laporan dalam format pdf dan csv
--  **Authentication** - Sistem login yang aman
--  **Responsive Design** - Tampilan optimal di semua perangkat
--  **Modern UI** - Menggunakan Shadcn/ui components
+---
 
-## Tech Stack
+## ✨ Features
 
-- **Frontend Framework:** React 18 + TypeScript
+| Feature | Description |
+|---|---|
+| Interactive Dashboard | Summary cards and charts for data visualization |
+| Multi-type Zakat | Supports Zakat Fitrah, Zakat Maal, Fidyah, and Infaq |
+| Full CRUD | Add, edit, view, and delete zakat records |
+| Export Reports | Download reports in PDF and CSV format |
+| Authentication | Secure login system via Supabase Auth |
+| Responsive Design | Optimized for all screen sizes |
+| Modern UI | Built with Shadcn/ui components |
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React 18 + TypeScript
 - **Build Tool:** Vite
 - **Backend:** Supabase (PostgreSQL)
 - **Styling:** Tailwind CSS
@@ -22,17 +31,18 @@ Sistem manajemen dan pelaporan zakat berbasis web yang dibangun dengan React, Ty
 - **State Management:** React Context API
 - **Form Handling:** Custom hooks
 
-## Prerequisites
+---
 
-Sebelum memulai, pastikan Anda sudah menginstall atau memiliki:
+## 🚀 Getting Started
 
-- Node.js (v18 atau lebih baru)
-- npm atau yarn
-- Akun Supabase
+### Prerequisites
+- Node.js v18+
+- npm or yarn
+- Supabase account
 
-## Installation
+### Installation
 
-1. **Clone repository**
+1. **Clone the repository**
    ```bash
    git clone <repository-url>
    cd zakat-report-system
@@ -43,113 +53,87 @@ Sebelum memulai, pastikan Anda sudah menginstall atau memiliki:
    npm install
    ```
 
-3. **Setup Environment Variables**
-   
-   Buat file `.env` di root directory:
+3. **Set up environment variables**
+
+   Create a `.env` file in the root directory:
    ```env
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
    ```
 
-4. **Setup Supabase Database**
-   
-   Jalankan migrations di Supabase:
-   - Buka Supabase Dashboard
-   - Jalankan SQL scripts dari folder `supabase/migrations/`
+4. **Set up Supabase database**
+   - Open your Supabase Dashboard
+   - Run the SQL scripts from the `supabase/migrations/` folder
 
-5. **Run Development Server**
+5. **Start the development server**
    ```bash
    npm run dev
    ```
-
-   Aplikasi akan berjalan di `http://localhost:5173`
-
-## 📁 Struktur Project
-
-```
-src/
-├── components/          # Komponen React
-│   ├── dashboard/      # Komponen dashboard
-│   ├── ui/             # Shadcn/ui components
-│   ├── zakat-form/     # Form sections
-│   ├── zakat-list/     # List components
-│   └── zakat-table/    # Table components
-├── contexts/           # React Context (Auth)
-├── hooks/              # Custom React hooks
-├── integrations/       # Integrasi eksternal (Supabase)
-├── lib/                # Utility libraries
-├── pages/              # Halaman aplikasi
-├── services/           # Business logic & API calls
-├── types/              # TypeScript definitions
-└── utils/              # Helper functions
-```
-
-## Cara Penggunaan
-
-### 1. Login
-- Buka aplikasi dan masuk ke halaman login
-- Masukkan kredensial
-
-### 2. Dashboard
-- Lihat ringkasan total zakat
-- Analisis data melalui charts
-- Review laporan terbaru
-
-### 3. Tambah Catatan Zakat
-- Klik "Add Record" atau "Tambah Data"
-- Isi form dengan informasi muzakki
-- Pilih jenis zakat yang akan dicatat:
-  - **Zakat Fitrah** - Zakat wajib di bulan Ramadan
-  - **Zakat Maal** - Zakat harta (emas, perak, uang, dll)
-  - **Fidyah** - Pengganti puasa yang tidak dilakukan
-  - **Infaq** - Sedekah sukarela
-- Submit form
-
-### 4. Kelola Data
-- **View** - Lihat detail catatan
-- **Edit** - Ubah data yang sudah ada
-- **Delete** - Hapus catatan
-- **Export** - Download laporan
-
-## Database Schema
-
-### Tabel `zakat_records`
-- `id` - UUID primary key
-- `name` - Nama muzakki
-- `address` - Alamat
-- `phone` - Nomor telepon
-- `zakat_fitrah_amount` - Jumlah zakat fitrah
-- `zakat_maal_amount` - Jumlah zakat maal
-- `fidyah_amount` - Jumlah fidyah
-- `infaq_amount` - Jumlah infaq
-- `total_amount` - Total keseluruhan
-- `payment_date` - Tanggal pembayaran
-- `notes` - Catatan tambahan
-- `created_at` - Timestamp pembuatan
-- `updated_at` - Timestamp update
-
-## Security
-
-- Authentication menggunakan Supabase Auth
-- Row Level Security (RLS) enabled
-- Environment variables untuk sensitive data
-- Input validation pada semua form
-
-## Contributing
-
-1. Fork repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
-
-## Lampiran
-<img width="1920" height="928" alt="Screenshot (194)" src="https://github.com/user-attachments/assets/c028ddde-97e5-4b8c-90ea-e999dd1b0c16" />
-<img width="1920" height="931" alt="image" src="https://github.com/user-attachments/assets/539d1b22-e178-4bab-b7fc-20cc2811a365" />
-
+   App will run at `http://localhost:5173`
 
 ---
 
+## 📁 Project Structure
 
+```
+src/
+├── components/          # React components
+│   ├── dashboard/       # Dashboard components
+│   ├── ui/              # Shadcn/ui components
+│   ├── zakat-form/      # Form sections
+│   ├── zakat-list/      # List components
+│   └── zakat-table/     # Table components
+├── contexts/            # React Context (Auth)
+├── hooks/               # Custom React hooks
+├── integrations/        # External integrations (Supabase)
+├── lib/                 # Utility libraries
+├── pages/               # App pages
+├── services/            # Business logic & API calls
+├── types/               # TypeScript type definitions
+└── utils/               # Helper functions
+```
+
+---
+
+## 🗄️ Database Schema
+
+### `zakat_records` table
+
+| Column | Type | Description |
+|---|---|---|
+| `id` | UUID | Primary key |
+| `name` | String | Muzakki name |
+| `address` | String | Address |
+| `phone` | String | Phone number |
+| `zakat_fitrah_amount` | Number | Zakat Fitrah amount |
+| `zakat_maal_amount` | Number | Zakat Maal amount |
+| `fidyah_amount` | Number | Fidyah amount |
+| `infaq_amount` | Number | Infaq amount |
+| `total_amount` | Number | Total amount |
+| `payment_date` | Date | Payment date |
+| `notes` | String | Additional notes |
+| `created_at` | Timestamp | Record creation time |
+| `updated_at` | Timestamp | Last update time |
+
+---
+
+## 🔒 Security
+
+- Authentication via Supabase Auth
+- Row Level Security (RLS) enabled on all tables
+- Sensitive credentials stored in environment variables
+- Input validation on all forms
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
 
 Made with ❤️ for better zakat management
