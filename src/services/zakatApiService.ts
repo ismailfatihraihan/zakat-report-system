@@ -3,12 +3,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { ZakatFormData, ZakatRecord } from "@/types/ZakatTypes";
 import { mapDbRecordToZakatRecord, prepareRecordForDb } from "./zakatTransformService";
 
-// Get all records from Supabase
-export const getAllRecords = async (): Promise<ZakatRecord[]> => {
-  const { data, error } = await supabase
+// Get all records from Supabase, filtered by period
+export const getAllRecords = async (period?: string): Promise<ZakatRecord[]> => {
+  let query = supabase
     .from('zakat_records')
     .select('*')
     .order('created_at', { ascending: true });
+  
+  if (period) {
+    query = query.eq('period', period);
+  }
+
+  const { data, error } = await query;
   
   if (error) {
     console.error("Error fetching records:", error);

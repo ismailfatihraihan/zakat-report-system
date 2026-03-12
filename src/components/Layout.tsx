@@ -2,9 +2,24 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Home, Plus, List, LogOut, FileBarChart } from "lucide-react";
+import { Home, Plus, List, LogOut, FileBarChart, Calendar, Settings } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePeriod } from "@/contexts/PeriodContext";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -26,10 +41,14 @@ const Layout: React.FC<LayoutProps> = ({ children, forceActivePath }) => {
   }
   
   const { logout } = useAuth();
+  const { currentPeriod, setCurrentPeriod, availablePeriods, fitrahRateUang, setFitrahRateUang } = usePeriod();
   const isActive = (path: string) => location.pathname === path;
 
-  const handleLogout = () => {
-    logout();
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(value);
+
+  const handleLogout = async () => {
+    await logout();
     try {
       navigate("/login");
     } catch (e) {
@@ -46,6 +65,45 @@ const Layout: React.FC<LayoutProps> = ({ children, forceActivePath }) => {
             <Link to="/" className="flex items-center space-x-2">
               <span className="text-base md:text-lg font-semibold text-primary">ZakatApp</span>
             </Link>
+          </div>
+          <div className="flex items-center gap-2">
+            <Select value={currentPeriod} onValueChange={setCurrentPeriod}>
+              <SelectTrigger className="w-[130px] h-9 text-sm">
+                <Calendar size={14} className="mr-1" />
+                <SelectValue placeholder="Period" />
+              </SelectTrigger>
+              <SelectContent>
+                {availablePeriods.map((p) => (
+                  <SelectItem key={p} value={p}>
+                    {p}H
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-9 w-9">
+                  <Settings size={16} />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64" align="start">
+                <div className="space-y-3">
+                  <h4 className="font-medium text-sm">Pengaturan Periode {currentPeriod}H</h4>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Tarif Zakat Fitrah (Uang/Jiwa)</Label>
+                    <Input
+                      type="number"
+                      value={fitrahRateUang}
+                      onChange={(e) => setFitrahRateUang(Number(e.target.value))}
+                      className="h-8"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Saat ini: {formatCurrency(fitrahRateUang)}/jiwa
+                    </p>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
           <div className="flex flex-1 items-center justify-end">
             <nav className="hidden md:flex items-center space-x-6">

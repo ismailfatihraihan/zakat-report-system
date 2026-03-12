@@ -6,8 +6,9 @@ import { BERAS_PER_JIWA } from "./constants";
 import { validateJiwaInput } from "./validators";
 import { calculateBerasFromJiwa, calculateUangFromJiwa } from "@/utils/calculators";
 
-export const useFormState = (initialData?: ZakatRecord, isEdit: boolean = false) => {
+export const useFormState = (initialData?: ZakatRecord, isEdit: boolean = false, period: string = "", initialRate: number = 37500) => {
   const [formData, setFormData] = useState<ZakatFormData>({
+    period: period,
     penginput: "",
     tanggal: format(new Date(), "yyyy-MM-dd"),
     nama: "",
@@ -29,12 +30,13 @@ export const useFormState = (initialData?: ZakatRecord, isEdit: boolean = false)
     }
   });
   
-  const [zakatFitrahRate, setZakatFitrahRate] = useState(37500);
+  const [zakatFitrahRate, setZakatFitrahRate] = useState(initialRate);
   
   // Load initial data if editing
   useEffect(() => {
     if (initialData && isEdit) {
       setFormData({
+        period: initialData.period,
         penginput: initialData.penginput,
         tanggal: format(new Date(initialData.tanggal), "yyyy-MM-dd"),
         nama: initialData.nama,
@@ -194,7 +196,7 @@ export const useFormState = (initialData?: ZakatRecord, isEdit: boolean = false)
           uang: 0
         }
       });
-      setZakatFitrahRate(37500);
+      setZakatFitrahRate(initialRate);
     }
   };
 

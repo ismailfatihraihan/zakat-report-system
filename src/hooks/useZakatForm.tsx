@@ -2,6 +2,7 @@
 import { ZakatRecord } from "@/types/ZakatTypes";
 import { useFormState } from "./zakat-form/useFormState";
 import { useFormSubmission } from "./zakat-form/useFormSubmission";
+import { usePeriod } from "@/contexts/PeriodContext";
 
 export const useZakatForm = ({ 
   initialData, 
@@ -10,6 +11,8 @@ export const useZakatForm = ({
   initialData?: ZakatRecord; 
   isEdit?: boolean;
 }) => {
+  const { currentPeriod, fitrahRateUang } = usePeriod();
+
   const {
     formData,
     zakatFitrahRate,
@@ -17,7 +20,7 @@ export const useZakatForm = ({
     handleSelectChange,
     handleRateChange,
     handleReset
-  } = useFormState(initialData, isEdit);
+  } = useFormState(initialData, isEdit, currentPeriod, fitrahRateUang);
   
   const {
     isSubmitting,

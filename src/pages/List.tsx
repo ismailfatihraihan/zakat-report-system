@@ -1,19 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
 import { getAllRecords, deleteRecord } from "@/services/zakatService";
 import ZakatCardList from "@/components/zakat-list/ZakatCardList";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, Table, LayoutList } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { RotateCcw, Table, LayoutList, Search, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import DeleteConfirmDialog from "@/components/zakat-table/DeleteConfirmDialog";
 import ZakatTable from "@/components/ZakatTable";
+import { usePeriod } from "@/contexts/PeriodContext";
+import { PENGINPUT_OPTIONS } from "@/types/ZakatTypes";
 const List: React.FC = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState("cards");
+  const { currentPeriod } = usePeriod();
+
+  // Filter state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterPenginput, setFilterPenginput] = useState("all");
+  const [filterDate, setFilterDate] = useState("");
 
   // Load records using React Query, sorted by newest first
   const {
@@ -22,8 +38,8 @@ const List: React.FC = () => {
     isLoading,
     error
   } = useQuery({
-    queryKey: ['zakatRecords'],
-    queryFn: getAllRecords,
+    queryKey: ['zakatRecords', currentPeriod],
+    queryFn: () => getAllRecords(currentPeriod),
     meta: {
       onError: () => {
         toast.error("Failed to load records. Please try again later.");
@@ -32,7 +48,37 @@ const List: React.FC = () => {
   });
 
   // Sort records to show newest on top
-  const sortedRecords = [...records].reverse(); // Membalik urutan dari hasil query
+  const sortedRecords = [...records].reverse();
+
+  // Apply client-side filters
+  const filteredRecords = useMemo(() => {
+    return sortedRecords.filter((record) => {
+      // Search by nama or alamat
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        const matchesName = record.nama.toLowerCase().includes(query);
+        const matchesAddress = record.alamat.toLowerCase().includes(query);
+        if (!matchesName && !matchesAddress) return false;
+      }
+      // Filter by penginput
+      if (filterPenginput !== "all" && record.penginput !== filterPenginput) {
+        return false;
+      }
+      // Filter by date
+      if (filterDate && record.tanggal !== filterDate) {
+        return false;
+      }
+      return true;
+    });
+  }, [sortedRecords, searchQuery, filterPenginput, filterDate]);
+
+  const hasActiveFilters = searchQuery || filterPenginput !== "all" || filterDate;
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setFilterPenginput("all");
+    setFilterDate("");
+  };
 
   // Handle record deletion
   const handleDelete = async () => {
@@ -79,6 +125,47 @@ const List: React.FC = () => {
         
         <Tabs defaultValue="cards" value={activeTab} onValueChange={setActiveTab} className="w-full">
           
+          {/* Filter bar */}
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Cari nama atau alamat..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 h-9"
+              />
+            </div>
+            <Select value={filterPenginput} onValueChange={setFilterPenginput}>
+              <SelectTrigger className="w-full sm:w-[160px] h-9">
+                <SelectValue placeholder="Penginput" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Semua Penginput</SelectItem>
+                {PENGINPUT_OPTIONS.map((name) => (
+                  <SelectItem key={name} value={name}>{name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input
+              type="date"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+              className="w-full sm:w-[160px] h-9"
+            />
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="h-9 px-3">
+                <X className="h-4 w-4 mr-1" />
+                Reset
+              </Button>
+            )}
+          </div>
+
+          {hasActiveFilters && !isLoading && (
+            <p className="text-sm text-muted-foreground mb-3">
+              Menampilkan {filteredRecords.length} dari {records.length} data
+            </p>
+          )}
 
           <TabsContent value="cards" className="pt-3 md:pt-6">
             {isLoading ? <div className="flex items-center justify-center h-40 md:h-60 w-full bg-card/50 rounded-lg border border-border/30">
@@ -91,7 +178,7 @@ const List: React.FC = () => {
                 <Button variant="outline" className="mt-1 md:mt-2" onClick={() => refetch()} size="sm">
                   Retry
                 </Button>
-              </div> : <ZakatCardList records={sortedRecords} onDelete={confirmDelete} />}
+              </div> : <ZakatCardList records={filteredRecords} onDelete={confirmDelete} />}
           </TabsContent>
           
           <TabsContent value="table" className="pt-3 md:pt-6">
@@ -106,7 +193,7 @@ const List: React.FC = () => {
                   Retry
                 </Button>
               </div> : <div className="protocol-card p-0 md:p-1 overflow-hidden">
-                <ZakatTable data={sortedRecords} onDelete={() => refetch()} locationPath="/list" />
+                <ZakatTable data={filteredRecords} onDelete={() => refetch()} locationPath="/list" />
               </div>}
           </TabsContent>
         </Tabs>

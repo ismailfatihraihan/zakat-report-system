@@ -1,6 +1,7 @@
 
 export interface ZakatRecord {
   id: string;
+  period: string;
   penginput: string;
   tanggal: string;
   nama: string;

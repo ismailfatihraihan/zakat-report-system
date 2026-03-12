@@ -60,7 +60,7 @@ const ZakatFitrahSection: React.FC<ZakatFitrahSectionProps> = ({
 
           {/* Beras */}
           <div className="space-y-2">
-            <Label htmlFor="zakatFitrah.berasKg">Beras (kg) - Auto-calculated: 2.5kg/jiwa</Label>
+            <Label htmlFor="zakatFitrah.berasKg">Beras (kg) - 2.5kg/jiwa</Label>
             <Input
               id="zakatFitrah.berasKg"
               name="zakatFitrah.berasKg"
@@ -91,7 +91,7 @@ const ZakatFitrahSection: React.FC<ZakatFitrahSectionProps> = ({
           {/* Uang */}
           <div className="space-y-2">
             <Label htmlFor="zakatFitrah.uang">
-              Uang (Auto-calculated: {formatCurrency(zakatFitrahRate)}/jiwa)
+              Uang ({formatCurrency(zakatFitrahRate)}/jiwa)
             </Label>
             <select 
               onChange={handleRateChange} 

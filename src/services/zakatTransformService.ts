@@ -6,6 +6,7 @@ import { calculateTotals } from "@/utils/calculators";
 export const mapDbRecordToZakatRecord = (data: any): ZakatRecord => {
   return {
     id: data.id,
+    period: data.period,
     penginput: data.penginput,
     tanggal: data.tanggal,
     nama: data.nama,
@@ -38,6 +39,7 @@ export const prepareRecordForDb = (formData: ZakatFormData) => {
   const { totalBeras, totalUang } = calculateTotals(formData);
   
   return {
+    period: formData.period,
     penginput: formData.penginput,
     tanggal: formData.tanggal,
     nama: formData.nama,

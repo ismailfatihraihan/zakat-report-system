@@ -20,6 +20,7 @@ export type Database = {
           infaq_uang: number
           nama: string
           penginput: string
+          period: string
           tanggal: string
           total_beras: number
           total_uang: number
@@ -40,6 +41,7 @@ export type Database = {
           infaq_uang?: number
           nama: string
           penginput: string
+          period: string
           tanggal: string
           total_beras?: number
           total_uang?: number
@@ -60,6 +62,7 @@ export type Database = {
           infaq_uang?: number
           nama?: string
           penginput?: string
+          period?: string
           tanggal?: string
           total_beras?: number
           total_uang?: number

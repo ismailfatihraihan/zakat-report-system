@@ -11,16 +11,18 @@ import { getAllRecords, initializeWithSampleData } from "@/services/zakatService
 import { PlusCircle, BarChart, Table, LayoutList } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { usePeriod } from "@/contexts/PeriodContext";
 
 const Index: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const { currentPeriod } = usePeriod();
   
   // Load records using React Query
   const { data: records = [], refetch, isLoading, error } = useQuery({
-    queryKey: ['zakatRecords'],
-    queryFn: getAllRecords,
+    queryKey: ['zakatRecords', currentPeriod],
+    queryFn: () => getAllRecords(currentPeriod),
     meta: {
       onError: () => {
         toast.error("Failed to load records. Please try again later.");
