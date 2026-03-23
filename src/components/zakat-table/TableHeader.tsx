@@ -6,9 +6,10 @@ import { format } from "date-fns";
 
 interface TableHeaderProps {
   data: ZakatRecord[];
+  canExport?: boolean;
 }
 
-const TableHeader: React.FC<TableHeaderProps> = ({ data }) => {
+const TableHeader: React.FC<TableHeaderProps> = ({ data, canExport = true }) => {
   // Format date for display
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'dd MMM yyyy');
@@ -28,11 +29,13 @@ const TableHeader: React.FC<TableHeaderProps> = ({ data }) => {
       <div>
         <h2 className="text-xl font-semibold">Total Records: {data.length}</h2>
       </div>
-      <ExportButton 
-        data={data} 
-        formatDate={formatDate}
-        formatCurrency={formatCurrency} 
-      />
+      {canExport && (
+        <ExportButton 
+          data={data} 
+          formatDate={formatDate}
+          formatCurrency={formatCurrency} 
+        />
+      )}
     </div>
   );
 };

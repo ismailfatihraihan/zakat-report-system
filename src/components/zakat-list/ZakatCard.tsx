@@ -10,12 +10,14 @@ import ZakatCardSummary from "./ZakatCardSummary";
 interface ZakatCardProps {
   record: ZakatRecord;
   onDelete: (id: string) => void;
+  canManage: boolean;
   index: number;
 }
 
 const ZakatCard: React.FC<ZakatCardProps> = ({
   record,
   onDelete,
+  canManage,
   index
 }) => {
   return (
@@ -25,6 +27,7 @@ const ZakatCard: React.FC<ZakatCardProps> = ({
         id={record.id}
         index={index}
         onDelete={onDelete}
+        canManage={canManage}
       />
       <CardContent className="space-y-3 pt-3 md:space-y-4 md:pt-4 flex-grow text-sm">
         <ZakatCardDetails

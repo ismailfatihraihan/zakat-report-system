@@ -4,9 +4,9 @@ import { ZakatFormData, ZakatRecord } from "@/types/ZakatTypes";
 import { mapDbRecordToZakatRecord, prepareRecordForDb } from "./zakatTransformService";
 
 // Get all records from Supabase, filtered by period
-export const getAllRecords = async (period?: string): Promise<ZakatRecord[]> => {
+export const getAllRecords = async (period?: string, useGuestView: boolean = false): Promise<ZakatRecord[]> => {
   let query = supabase
-    .from('zakat_records')
+    .from(useGuestView ? 'zakat_records_public' : 'zakat_records')
     .select('*')
     .order('created_at', { ascending: true });
   
@@ -26,9 +26,9 @@ export const getAllRecords = async (period?: string): Promise<ZakatRecord[]> => 
 };
 
 // Get a single record by ID
-export const getRecordById = async (id: string): Promise<ZakatRecord | null> => {
+export const getRecordById = async (id: string, useGuestView: boolean = false): Promise<ZakatRecord | null> => {
   const { data, error } = await supabase
-    .from('zakat_records')
+    .from(useGuestView ? 'zakat_records_public' : 'zakat_records')
     .select('*')
     .eq('id', id)
     .single();

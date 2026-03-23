@@ -8,13 +8,15 @@ interface ZakatCardHeaderProps {
   id: string;
   index: number;
   onDelete: (id: string) => void;
+  canManage: boolean;
 }
 
 const ZakatCardHeader: React.FC<ZakatCardHeaderProps> = ({
   name,
   id,
   index,
-  onDelete
+  onDelete,
+  canManage
 }) => {
   return (
     <CardHeader className="flex flex-row items-center justify-between pb-0 space-y-0 bg-secondary/30">
@@ -24,7 +26,7 @@ const ZakatCardHeader: React.FC<ZakatCardHeaderProps> = ({
         </span>
         <span className="truncate">{name.normalize("NFKC")}</span>
       </div>
-      <TableActions recordId={id} onDelete={onDelete} />
+      {canManage && <TableActions recordId={id} onDelete={onDelete} />}
     </CardHeader>
   );
 };

@@ -19,12 +19,14 @@ import DeleteConfirmDialog from "@/components/zakat-table/DeleteConfirmDialog";
 import ZakatTable from "@/components/ZakatTable";
 import { usePeriod } from "@/contexts/PeriodContext";
 import { PENGINPUT_OPTIONS } from "@/types/ZakatTypes";
+import { useAuth } from "@/contexts/AuthContext";
 const List: React.FC = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState("cards");
   const { currentPeriod } = usePeriod();
+  const { isAuthenticated, isGuest } = useAuth();
 
   // Filter state
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,8 +41,8 @@ const List: React.FC = () => {
     isLoading,
     error
   } = useQuery({
-    queryKey: ['zakatRecords', currentPeriod],
-    queryFn: () => getAllRecords(currentPeriod),
+    queryKey: ['zakatRecords', currentPeriod, isGuest],
+    queryFn: () => getAllRecords(isGuest ? undefined : currentPeriod, isGuest),
     meta: {
       onError: () => {
         toast.error("Failed to load records. Please try again later.");
@@ -58,7 +60,7 @@ const List: React.FC = () => {
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
         const matchesName = record.nama.toLowerCase().includes(query);
-        const matchesAddress = record.alamat.toLowerCase().includes(query);
+        const matchesAddress = isAuthenticated && record.alamat.toLowerCase().includes(query);
         if (!matchesName && !matchesAddress) return false;
       }
       // Filter by penginput
@@ -75,7 +77,7 @@ const List: React.FC = () => {
       }
       return true;
     });
-  }, [sortedRecords, searchQuery, filterPenginput, filterPembayaran, filterDate]);
+  }, [sortedRecords, searchQuery, filterPenginput, filterPembayaran, filterDate, isAuthenticated]);
 
   const hasActiveFilters = searchQuery || filterPenginput !== "all" || filterPembayaran !== "all" || filterDate;
 
@@ -88,6 +90,7 @@ const List: React.FC = () => {
 
   // Handle record deletion
   const handleDelete = async () => {
+    if (!isAuthenticated) return;
     if (recordToDelete) {
       setIsDeleting(true);
       try {
@@ -146,7 +149,7 @@ const List: React.FC = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Cari nama atau alamat..."
+                placeholder={isAuthenticated ? "Cari nama atau alamat..." : "Cari nama..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 h-9"
@@ -204,7 +207,7 @@ const List: React.FC = () => {
                 <Button variant="outline" className="mt-1 md:mt-2" onClick={() => refetch()} size="sm">
                   Retry
                 </Button>
-              </div> : <ZakatCardList records={filteredRecords} onDelete={confirmDelete} />}
+                </div> : <ZakatCardList records={filteredRecords} onDelete={confirmDelete} canManage={isAuthenticated} />}
           </TabsContent>
           
           <TabsContent value="table" className="pt-3 md:pt-6">
@@ -224,7 +227,9 @@ const List: React.FC = () => {
           </TabsContent>
         </Tabs>
         
-        <DeleteConfirmDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog} onConfirm={handleDelete} isDeleting={isDeleting} />
+        {isAuthenticated && (
+          <DeleteConfirmDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog} onConfirm={handleDelete} isDeleting={isDeleting} />
+        )}
       </div>
     </Layout>;
 };

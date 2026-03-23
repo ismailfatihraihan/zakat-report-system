@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { ZakatRecord } from "@/types/ZakatTypes";
 import { deleteRecord } from "@/services/zakatApiService";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 import TableHeader from "./zakat-table/TableHeader";
 import ZakatTableContent from "./zakat-table/ZakatTableContent";
 import DeleteConfirmDialog from "./zakat-table/DeleteConfirmDialog";
@@ -22,6 +23,8 @@ const ZakatTable: React.FC<ZakatTableProps> = ({
   locationPath,
   searchQuery 
 }) => {
+  const { isAuthenticated, isGuest } = useAuth();
+
   // Get location safely - will be available when used within router context
   let location;
   try {
@@ -40,6 +43,7 @@ const ZakatTable: React.FC<ZakatTableProps> = ({
   
   // Handle record deletion
   const handleDelete = async () => {
+    if (!isAuthenticated) return;
     if (recordToDelete) {
       setIsDeleting(true);
       try {
@@ -63,6 +67,7 @@ const ZakatTable: React.FC<ZakatTableProps> = ({
   
   // Confirm deletion
   const confirmDelete = (id: string) => {
+    if (!isAuthenticated) return;
     setRecordToDelete(id);
     setOpenDeleteDialog(true);
   };
@@ -90,18 +95,20 @@ const ZakatTable: React.FC<ZakatTableProps> = ({
   
   return (
     <ErrorBoundary>
-      <TableHeader data={data} />
+      <TableHeader data={data} canExport={isAuthenticated} />
       
-      <ZakatTableContent data={data} onDeleteClick={confirmDelete} />
+      <ZakatTableContent data={data} onDeleteClick={confirmDelete} showAddress={!isGuest} showActions={isAuthenticated} />
       
       <div ref={tableEndRef}></div>
       
-      <DeleteConfirmDialog 
-        open={openDeleteDialog}
-        onOpenChange={setOpenDeleteDialog}
-        onConfirm={handleDelete}
-        isDeleting={isDeleting}
-      />
+      {isAuthenticated && (
+        <DeleteConfirmDialog 
+          open={openDeleteDialog}
+          onOpenChange={setOpenDeleteDialog}
+          onConfirm={handleDelete}
+          isDeleting={isDeleting}
+        />
+      )}
     </ErrorBoundary>
   );
 };

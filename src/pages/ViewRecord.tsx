@@ -20,10 +20,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { formatCurrency } from "@/utils/formatters";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ViewRecord: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { isAuthenticated, isGuest } = useAuth();
   const [record, setRecord] = useState<ZakatRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -32,7 +34,7 @@ const ViewRecord: React.FC = () => {
     const fetchRecord = async () => {
       if (id) {
         try {
-          const recordData = await getRecordById(id);
+          const recordData = await getRecordById(id, isGuest);
           if (recordData) {
             setRecord(recordData);
           } else {
@@ -49,7 +51,7 @@ const ViewRecord: React.FC = () => {
     };
     
     fetchRecord();
-  }, [id, navigate]);
+  }, [id, navigate, isGuest]);
   
   // Format date
   const formatDate = (dateString: string) => {
@@ -118,24 +120,26 @@ const ViewRecord: React.FC = () => {
             <ArrowLeft />
           </Button>
           <h1 className="text-2xl font-semibold flex-1">Record Details</h1>
-          <div className="flex space-x-2">
-            <Button 
-              variant="outline" 
-              onClick={() => navigate(`/edit/${record.id}`)}
-              className="flex items-center"
-            >
-              <Edit className="mr-2 h-4 w-4" />
-              Edit
-            </Button>
-            <Button 
-              variant="destructive" 
-              onClick={() => setOpenDeleteDialog(true)}
-              className="flex items-center"
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete
-            </Button>
-          </div>
+          {isAuthenticated && (
+            <div className="flex space-x-2">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate(`/edit/${record.id}`)}
+                className="flex items-center"
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+              </Button>
+              <Button 
+                variant="destructive" 
+                onClick={() => setOpenDeleteDialog(true)}
+                className="flex items-center"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </Button>
+            </div>
+          )}
         </div>
         
         <div className="space-y-6">
@@ -162,10 +166,12 @@ const ViewRecord: React.FC = () => {
                   <dt className="text-sm text-muted-foreground">Nama</dt>
                   <dd>{record.nama}</dd>
                 </div>
-                <div className="space-y-1 md:col-span-2">
-                  <dt className="text-sm text-muted-foreground">Alamat</dt>
-                  <dd>{record.alamat}</dd>
-                </div>
+                {!isGuest && (
+                  <div className="space-y-1 md:col-span-2">
+                    <dt className="text-sm text-muted-foreground">Alamat</dt>
+                    <dd>{record.alamat}</dd>
+                  </div>
+                )}
               </dl>
             </CardContent>
           </Card>
@@ -272,22 +278,24 @@ const ViewRecord: React.FC = () => {
         </div>
       </div>
       
-      <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
-        <AlertDialogContent className="glass-container">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the record.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {isAuthenticated && (
+        <AlertDialog open={openDeleteDialog} onOpenChange={setOpenDeleteDialog}>
+          <AlertDialogContent className="glass-container">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the record.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </Layout>
   );
 };

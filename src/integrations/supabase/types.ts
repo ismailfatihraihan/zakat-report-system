@@ -80,7 +80,31 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      zakat_records_public: {
+        Row: {
+          alamat: string
+          created_at: string
+          fidyah_beras: number
+          fidyah_uang: number
+          id: string
+          infaq_beras: number
+          infaq_uang: number
+          nama: string
+          pembayaran: string
+          penginput: string
+          period: string
+          tanggal: string
+          total_beras: number
+          total_uang: number
+          updated_at: string
+          zakat_fitrah_beras_kg: number
+          zakat_fitrah_jiwa_beras: number
+          zakat_fitrah_jiwa_uang: number
+          zakat_fitrah_uang: number
+          zakat_maal: number
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never

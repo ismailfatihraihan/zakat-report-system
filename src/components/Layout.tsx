@@ -2,10 +2,11 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Home, Plus, List, LogOut, FileBarChart, Calendar, Settings } from "lucide-react";
+import { Home, Plus, List, LogOut, Calendar, Settings, LogIn } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePeriod } from "@/contexts/PeriodContext";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -40,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({ children, forceActivePath }) => {
     navigate = () => console.warn("Navigation not available in this context");
   }
   
-  const { logout } = useAuth();
+  const { logout, isAuthenticated, isGuest } = useAuth();
   const { currentPeriod, setCurrentPeriod, availablePeriods, fitrahRateUang, setFitrahRateUang } = usePeriod();
   const isActive = (path: string) => location.pathname === path;
 
@@ -50,7 +51,7 @@ const Layout: React.FC<LayoutProps> = ({ children, forceActivePath }) => {
   const handleLogout = async () => {
     await logout();
     try {
-      navigate("/login");
+      navigate("/");
     } catch (e) {
       console.warn("Navigation failed, likely outside router context");
     }
@@ -67,43 +68,49 @@ const Layout: React.FC<LayoutProps> = ({ children, forceActivePath }) => {
             </Link>
           </div>
           <div className="flex items-center gap-2">
-            <Select value={currentPeriod} onValueChange={setCurrentPeriod}>
-              <SelectTrigger className="w-[130px] h-9 text-sm">
-                <Calendar size={14} className="mr-1" />
-                <SelectValue placeholder="Period" />
-              </SelectTrigger>
-              <SelectContent>
-                {availablePeriods.map((p) => (
-                  <SelectItem key={p} value={p}>
-                    {p}H
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-9 w-9">
-                  <Settings size={16} />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64" align="start">
-                <div className="space-y-3">
-                  <h4 className="font-medium text-sm">Pengaturan Periode {currentPeriod}H</h4>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs">Tarif Zakat Fitrah (Uang/Jiwa)</Label>
-                    <Input
-                      type="number"
-                      value={fitrahRateUang}
-                      onChange={(e) => setFitrahRateUang(Number(e.target.value))}
-                      className="h-8"
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Saat ini: {formatCurrency(fitrahRateUang)}/jiwa
-                    </p>
-                  </div>
-                </div>
-              </PopoverContent>
-            </Popover>
+            {isAuthenticated ? (
+              <>
+                <Select value={currentPeriod} onValueChange={setCurrentPeriod}>
+                  <SelectTrigger className="w-[130px] h-9 text-sm">
+                    <Calendar size={14} className="mr-1" />
+                    <SelectValue placeholder="Period" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availablePeriods.map((p) => (
+                      <SelectItem key={p} value={p}>
+                        {p}H
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-9 w-9">
+                      <Settings size={16} />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64" align="start">
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-sm">Pengaturan Periode {currentPeriod}H</h4>
+                      <div className="space-y-1.5">
+                        <Label className="text-xs">Tarif Zakat Fitrah (Uang/Jiwa)</Label>
+                        <Input
+                          type="number"
+                          value={fitrahRateUang}
+                          onChange={(e) => setFitrahRateUang(Number(e.target.value))}
+                          className="h-8"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Saat ini: {formatCurrency(fitrahRateUang)}/jiwa
+                        </p>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </>
+            ) : (
+              <Badge variant="secondary">Guest Mode</Badge>
+            )}
           </div>
           <div className="flex flex-1 items-center justify-end">
             <nav className="hidden md:flex items-center space-x-6">
@@ -127,36 +134,56 @@ const Layout: React.FC<LayoutProps> = ({ children, forceActivePath }) => {
                 <List size={16} />
                 <span>Records</span>
               </Link>
-              <Link 
-                to="/add" 
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary inline-flex items-center gap-1.5",
-                  isActive("/add") ? "text-foreground" : "text-muted-foreground"
-                )}
-              >
-                <Plus size={16} />
-                <span>Input</span>
-              </Link>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={handleLogout}
-                className="ml-2 flex items-center gap-1.5 text-muted-foreground hover:text-destructive"
-              >
-                <LogOut size={16} />
-                <span>Logout</span>
-              </Button>
+              {isAuthenticated && (
+                <Link 
+                  to="/add" 
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary inline-flex items-center gap-1.5",
+                    isActive("/add") ? "text-foreground" : "text-muted-foreground"
+                  )}
+                >
+                  <Plus size={16} />
+                  <span>Input</span>
+                </Link>
+              )}
+              {isAuthenticated && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="ml-2 flex items-center gap-1.5 text-muted-foreground hover:text-destructive"
+                >
+                  <LogOut size={16} />
+                  <span>Logout</span>
+                </Button>
+              )}
+              {isGuest && (
+                <Button asChild variant="ghost" size="sm" className="ml-2 flex items-center gap-1.5 text-muted-foreground hover:text-primary">
+                  <Link to="/login">
+                    <LogIn size={16} />
+                    <span>Login</span>
+                  </Link>
+                </Button>
+              )}
             </nav>
             
-            {/* Mobile logout button */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={handleLogout}
-              className="md:hidden text-muted-foreground"
-            >
-              <LogOut size={20} />
-            </Button>
+            {/* Mobile auth button */}
+            {isAuthenticated ? (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleLogout}
+                className="md:hidden text-muted-foreground"
+              >
+                <LogOut size={20} />
+              </Button>
+            ) : (
+              <Button asChild variant="ghost" size="icon" className="md:hidden text-muted-foreground">
+                <Link to="/login">
+                  <LogIn size={20} />
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -189,16 +216,18 @@ const Layout: React.FC<LayoutProps> = ({ children, forceActivePath }) => {
             <List size={20} />
             <span className="text-xs mt-1">Records</span>
           </Link>
-          <Link 
-            to="/add" 
-            className={cn(
-              "flex flex-col items-center p-2.5 transition-colors",
-              isActive("/add") ? "text-primary" : "text-muted-foreground"
-            )}
-          >
-            <Plus size={20} />
-            <span className="text-xs mt-1">Input</span>
-          </Link>
+          {isAuthenticated && (
+            <Link 
+              to="/add" 
+              className={cn(
+                "flex flex-col items-center p-2.5 transition-colors",
+                isActive("/add") ? "text-primary" : "text-muted-foreground"
+              )}
+            >
+              <Plus size={20} />
+              <span className="text-xs mt-1">Input</span>
+            </Link>
+          )}
         </nav>
       </div>
     </div>

@@ -7,9 +7,10 @@ import ErrorBoundary from "../ErrorBoundary";
 interface ZakatCardListProps {
   records: ZakatRecord[];
   onDelete: (id: string) => void;
+  canManage: boolean;
 }
 
-const ZakatCardList: React.FC<ZakatCardListProps> = ({ records, onDelete }) => {
+const ZakatCardList: React.FC<ZakatCardListProps> = ({ records, onDelete, canManage }) => {
   if (records.length === 0) {
     return (
       <div className="text-center p-8 md:p-12 bg-secondary/30 rounded-lg border border-border/50">
@@ -26,6 +27,7 @@ const ZakatCardList: React.FC<ZakatCardListProps> = ({ records, onDelete }) => {
             key={record.id} 
             record={record} 
             onDelete={onDelete} 
+            canManage={canManage}
             index={records.length - idx} // Display highest number first
           />
         ))}

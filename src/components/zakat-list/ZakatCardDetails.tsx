@@ -36,13 +36,15 @@ const ZakatCardDetails: React.FC<ZakatCardDetailsProps> = ({
         <span className="ml-1 sm:ml-1.5 font-medium">{pembayaran === "transfer" ? "Transfer" : "Cash"}</span>
       </div>
       
-      <div className="flex items-start text-xs sm:text-sm">
-        <MapPin className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 mt-0.5 text-primary" />
-        <div className="overflow-hidden">
-          <span className="text-muted-foreground">Alamat:</span>
-          <span className="ml-1 sm:ml-1.5 font-medium break-words line-clamp-2">{alamat.normalize("NFKC")}</span>
+      {alamat && (
+        <div className="flex items-start text-xs sm:text-sm">
+          <MapPin className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 mt-0.5 text-primary" />
+          <div className="overflow-hidden">
+            <span className="text-muted-foreground">Alamat:</span>
+            <span className="ml-1 sm:ml-1.5 font-medium break-words line-clamp-2">{alamat.normalize("NFKC")}</span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

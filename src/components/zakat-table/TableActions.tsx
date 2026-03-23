@@ -3,6 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface TableActionsProps {
   recordId: string;
@@ -10,6 +11,7 @@ interface TableActionsProps {
 }
 
 const TableActions: React.FC<TableActionsProps> = ({ recordId, onDelete }) => {
+  const { isAuthenticated } = useAuth();
   let navigate;
   
   try {
@@ -22,12 +24,17 @@ const TableActions: React.FC<TableActionsProps> = ({ recordId, onDelete }) => {
   }
   
   const handleEditClick = () => {
+    if (!isAuthenticated) return;
     try {
       navigate(`/edit/${recordId}`);
     } catch (e) {
       console.warn(`Navigation to /edit/${recordId} failed, likely outside router context`);
     }
   };
+
+  if (!isAuthenticated) {
+    return null;
+  }
   
   return (
     <div className="flex justify-center space-x-2">

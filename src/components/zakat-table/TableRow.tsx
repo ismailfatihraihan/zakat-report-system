@@ -8,12 +8,16 @@ interface ZakatTableRowProps {
   record: ZakatRecord;
   index: number;
   onDeleteClick: (id: string) => void;
+  showAddress?: boolean;
+  showActions?: boolean;
 }
 
 const ZakatTableRow: React.FC<ZakatTableRowProps> = ({ 
   record, 
   index,
-  onDeleteClick
+  onDeleteClick,
+  showAddress = true,
+  showActions = true
 }) => {
   // Format currency for display
   const formatCurrency = (amount: number) => {
@@ -36,7 +40,7 @@ const ZakatTableRow: React.FC<ZakatTableRowProps> = ({
       <td className="text-center align-middle border border-border/60">{record.pembayaran === "transfer" ? "Transfer" : "Cash"}</td>
       <td className="text-center align-middle border border-border/60">{formatDate(record.tanggal)}</td>
       <td className="align-middle border border-border/60 font-medium">{record.nama}</td>
-      <td className="align-middle border border-border/60">{record.alamat}</td>
+      {showAddress && <td className="align-middle border border-border/60">{record.alamat}</td>}
       <td className="text-center align-middle border border-border/60">{record.zakatFitrah.jiwaBeras}</td>
       <td className="text-center align-middle border border-border/60">{record.zakatFitrah.berasKg}</td>
       <td className="text-center align-middle border border-border/60">{record.zakatFitrah.jiwaUang}</td>
@@ -48,9 +52,11 @@ const ZakatTableRow: React.FC<ZakatTableRowProps> = ({
       <td className="text-right align-middle border border-border/60">{formatCurrency(record.fidyah.uang)}</td>
       <td className="text-center align-middle border border-border/60 font-medium">{record.totalBeras}</td>
       <td className="text-right align-middle border border-border/60 font-medium">{formatCurrency(record.totalUang)}</td>
-      <td className="text-center align-middle bg-white border border-border/60">
-        <TableActions recordId={record.id} onDelete={onDeleteClick} />
-      </td>
+      {showActions && (
+        <td className="text-center align-middle bg-white border border-border/60">
+          <TableActions recordId={record.id} onDelete={onDeleteClick} />
+        </td>
+      )}
     </tr>
   );
 };

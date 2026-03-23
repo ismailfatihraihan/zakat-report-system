@@ -25,11 +25,7 @@ const App = () => (
           <Sonner closeButton position="top-right" />
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Index />
-              </ProtectedRoute>
-            } />
+            <Route path="/" element={<Index />} />
             <Route path="/add" element={
               <ProtectedRoute>
                 <AddRecord />
@@ -40,16 +36,8 @@ const App = () => (
                 <EditRecord />
               </ProtectedRoute>
             } />
-            <Route path="/view/:id" element={
-              <ProtectedRoute>
-                <ViewRecord />
-              </ProtectedRoute>
-            } />
-            <Route path="/list" element={
-              <ProtectedRoute>
-                <List />
-              </ProtectedRoute>
-            } />
+            <Route path="/view/:id" element={<ViewRecord />} />
+            <Route path="/list" element={<List />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </ErrorBoundary>

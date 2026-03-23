@@ -12,17 +12,19 @@ import { PlusCircle, BarChart, Table, LayoutList } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { usePeriod } from "@/contexts/PeriodContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("dashboard");
   const { currentPeriod } = usePeriod();
+  const { isAuthenticated, isGuest } = useAuth();
   
   // Load records using React Query
   const { data: records = [], refetch, isLoading, error } = useQuery({
-    queryKey: ['zakatRecords', currentPeriod],
-    queryFn: () => getAllRecords(currentPeriod),
+    queryKey: ['zakatRecords', currentPeriod, isGuest],
+    queryFn: () => getAllRecords(isGuest ? undefined : currentPeriod, isGuest),
     meta: {
       onError: () => {
         toast.error("Failed to load records. Please try again later.");
@@ -32,12 +34,12 @@ const Index: React.FC = () => {
   
   // Initialize sample data if needed
   useEffect(() => {
-    if (import.meta.env.DEV) {
+    if (import.meta.env.DEV && isAuthenticated) {
       initializeWithSampleData(currentPeriod).catch(err => {
         console.error("Error initializing sample data:", err);
       });
     }
-  }, [currentPeriod]);
+  }, [currentPeriod, isAuthenticated]);
   
   useEffect(() => {
     // Check for tab param in URL
@@ -74,15 +76,17 @@ const Index: React.FC = () => {
               Manage and track zakat contributions efficiently
             </p>
           </div>
-          <Button 
-            asChild 
-            className="bg-primary hover:bg-primary/90 flex items-center h-9 md:h-10 px-3 md:px-4 gap-1.5 md:gap-2 text-sm"
-          >
-            <Link to="/add">
-              <PlusCircle className="h-4 w-4 md:h-5 md:w-5" />
-              <span className="hidden xs:inline">Input</span> Data Baru
-            </Link>
-          </Button>
+          {isAuthenticated && (
+            <Button 
+              asChild 
+              className="bg-primary hover:bg-primary/90 flex items-center h-9 md:h-10 px-3 md:px-4 gap-1.5 md:gap-2 text-sm"
+            >
+              <Link to="/add">
+                <PlusCircle className="h-4 w-4 md:h-5 md:w-5" />
+                <span className="hidden xs:inline">Input</span> Data Baru
+              </Link>
+            </Button>
+          )}
         </div>
         
         <Tabs 

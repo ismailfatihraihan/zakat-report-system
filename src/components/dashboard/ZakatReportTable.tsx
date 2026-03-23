@@ -8,6 +8,7 @@ import { format, parse, isValid } from "date-fns";
 import { toast } from "sonner";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { useAuth } from "@/contexts/AuthContext";
 interface ZakatReportTableProps {
   reportData: ReportData[];
   reportSummary: ReportSummary;
@@ -19,6 +20,7 @@ const ZakatReportTable: React.FC<ZakatReportTableProps> = ({
   formatCurrency
 }) => {
   const reportTableRef = useRef<HTMLDivElement>(null);
+  const { isAuthenticated } = useAuth();
 
   // Format date for display
   const formatDisplayDate = (dateStr: string) => {
@@ -125,16 +127,18 @@ const ZakatReportTable: React.FC<ZakatReportTableProps> = ({
   return <Card className="apple-card">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>LAPORAN PENERIMAAN ZISF</CardTitle>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={exportToExcel}>
-            <FileDown size={16} />
-            Export CSV
-          </Button>
-          <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={exportToPDF}>
-            <FileText size={16} />
-            Export PDF
-          </Button>
-        </div>
+        {isAuthenticated && (
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={exportToExcel}>
+              <FileDown size={16} />
+              Export CSV
+            </Button>
+            <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={exportToPDF}>
+              <FileText size={16} />
+              Export PDF
+            </Button>
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto" ref={reportTableRef}>
