@@ -29,6 +29,7 @@ const List: React.FC = () => {
   // Filter state
   const [searchQuery, setSearchQuery] = useState("");
   const [filterPenginput, setFilterPenginput] = useState("all");
+  const [filterPembayaran, setFilterPembayaran] = useState("all");
   const [filterDate, setFilterDate] = useState("");
 
   // Load records using React Query, sorted by newest first
@@ -64,19 +65,24 @@ const List: React.FC = () => {
       if (filterPenginput !== "all" && record.penginput !== filterPenginput) {
         return false;
       }
+      // Filter by pembayaran
+      if (filterPembayaran !== "all" && record.pembayaran !== filterPembayaran) {
+        return false;
+      }
       // Filter by date
       if (filterDate && record.tanggal !== filterDate) {
         return false;
       }
       return true;
     });
-  }, [sortedRecords, searchQuery, filterPenginput, filterDate]);
+  }, [sortedRecords, searchQuery, filterPenginput, filterPembayaran, filterDate]);
 
-  const hasActiveFilters = searchQuery || filterPenginput !== "all" || filterDate;
+  const hasActiveFilters = searchQuery || filterPenginput !== "all" || filterPembayaran !== "all" || filterDate;
 
   const clearFilters = () => {
     setSearchQuery("");
     setFilterPenginput("all");
+    setFilterPembayaran("all");
     setFilterDate("");
   };
 
@@ -124,6 +130,16 @@ const List: React.FC = () => {
         </div>
         
         <Tabs defaultValue="cards" value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full max-w-xs grid-cols-2 mb-4">
+            <TabsTrigger value="cards" className="flex items-center gap-1.5">
+              <LayoutList className="h-4 w-4" />
+              <span>Cards</span>
+            </TabsTrigger>
+            <TabsTrigger value="table" className="flex items-center gap-1.5">
+              <Table className="h-4 w-4" />
+              <span>Table</span>
+            </TabsTrigger>
+          </TabsList>
           
           {/* Filter bar */}
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4">
@@ -145,6 +161,16 @@ const List: React.FC = () => {
                 {PENGINPUT_OPTIONS.map((name) => (
                   <SelectItem key={name} value={name}>{name}</SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+            <Select value={filterPembayaran} onValueChange={setFilterPembayaran}>
+              <SelectTrigger className="w-full sm:w-[160px] h-9">
+                <SelectValue placeholder="Pembayaran" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Semua Pembayaran</SelectItem>
+                <SelectItem value="cash">Cash</SelectItem>
+                <SelectItem value="transfer">Transfer</SelectItem>
               </SelectContent>
             </Select>
             <Input

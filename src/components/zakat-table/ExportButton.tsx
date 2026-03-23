@@ -23,11 +23,11 @@ const ExportButton: React.FC<ExportButtonProps> = ({
       let csvContent = "data:text/csv;charset=utf-8,";
       
       // Add headers
-      csvContent += "No,Penginput,Tanggal,Nama,Alamat,Jiwa Beras,Beras (kg),Jiwa Uang,Uang,Zakat Maal,Infaq Beras,Infaq Uang,Fidyah Beras,Fidyah Uang,Total Beras,Total Uang\n";
+      csvContent += "No,Penginput,Pembayaran,Tanggal,Nama,Alamat,Jiwa Beras,Beras (kg),Jiwa Uang,Uang,Zakat Maal,Infaq Beras,Infaq Uang,Fidyah Beras,Fidyah Uang,Total Beras,Total Uang\n";
       
       // Add data
       data.forEach((record, index) => {
-        csvContent += `${index + 1},${record.penginput},${formatDate(record.tanggal)},${record.nama},${record.alamat},${record.zakatFitrah.jiwaBeras},${record.zakatFitrah.berasKg},${record.zakatFitrah.jiwaUang},${record.zakatFitrah.uang},${record.zakatMaal},${record.infaq.beras},${record.infaq.uang},${record.fidyah.beras},${record.fidyah.uang},${record.totalBeras},${record.totalUang}\n`;
+        csvContent += `${index + 1},${record.penginput},${record.pembayaran},${formatDate(record.tanggal)},${record.nama},${record.alamat},${record.zakatFitrah.jiwaBeras},${record.zakatFitrah.berasKg},${record.zakatFitrah.jiwaUang},${record.zakatFitrah.uang},${record.zakatMaal},${record.infaq.beras},${record.infaq.uang},${record.fidyah.beras},${record.fidyah.uang},${record.totalBeras},${record.totalUang}\n`;
       });
       
       // Create download link

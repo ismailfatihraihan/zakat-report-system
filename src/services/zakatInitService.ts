@@ -3,7 +3,7 @@ import { ZakatFormData } from "@/types/ZakatTypes";
 import { createRecord } from "./zakatApiService";
 
 // Initialize with sample data if empty
-export const initializeWithSampleData = async (): Promise<void> => {
+export const initializeWithSampleData = async (period: string): Promise<void> => {
   try {
     const { count } = await supabase
       .from('zakat_records')
@@ -11,7 +11,9 @@ export const initializeWithSampleData = async (): Promise<void> => {
     
     if (count === 0) {
       const sampleData: ZakatFormData = {
+        period,
         penginput: "Admin",
+        pembayaran: "cash",
         tanggal: new Date().toISOString().split('T')[0],
         nama: "Ahmad Hidayat",
         alamat: "Jl. Mawar No. 12",

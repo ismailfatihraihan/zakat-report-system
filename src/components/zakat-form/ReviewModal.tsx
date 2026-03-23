@@ -44,6 +44,10 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
                   <p className="font-medium">{formData.penginput || "-"}</p>
                 </div>
                 <div>
+                  <span className="text-sm text-muted-foreground">Pembayaran:</span>
+                  <p className="font-medium">{formData.pembayaran === "transfer" ? "Transfer" : "Cash"}</p>
+                </div>
+                <div>
                   <span className="text-sm text-muted-foreground">Tanggal:</span>
                   <p className="font-medium">{formattedDate || "-"}</p>
                 </div>

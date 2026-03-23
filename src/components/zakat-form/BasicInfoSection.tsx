@@ -14,6 +14,7 @@ import {
 
 interface BasicInfoSectionProps {
   penginput: string;
+  pembayaran: "cash" | "transfer";
   tanggal: string;
   nama: string;
   alamat: string;
@@ -23,6 +24,7 @@ interface BasicInfoSectionProps {
 
 const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
   penginput,
+  pembayaran,
   tanggal,
   nama,
   alamat,
@@ -63,6 +65,21 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                     {option}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="pembayaran">Pembayaran</Label>
+            <Select
+              value={pembayaran}
+              onValueChange={(value) => onSelectChange(value, "pembayaran")}
+            >
+              <SelectTrigger className="w-full" id="pembayaran">
+                <SelectValue placeholder="Pilih pembayaran" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="cash">Cash</SelectItem>
+                <SelectItem value="transfer">Transfer</SelectItem>
               </SelectContent>
             </Select>
           </div>

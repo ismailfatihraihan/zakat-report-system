@@ -154,6 +154,10 @@ const ViewRecord: React.FC = () => {
                   <dt className="text-sm text-muted-foreground">Tanggal</dt>
                   <dd>{formatDate(record.tanggal)}</dd>
                 </div>
+                <div className="space-y-1">
+                  <dt className="text-sm text-muted-foreground">Pembayaran</dt>
+                  <dd>{record.pembayaran === "transfer" ? "Transfer" : "Cash"}</dd>
+                </div>
                 <div className="space-y-1 md:col-span-2">
                   <dt className="text-sm text-muted-foreground">Nama</dt>
                   <dd>{record.nama}</dd>

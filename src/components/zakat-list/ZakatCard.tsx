@@ -29,6 +29,7 @@ const ZakatCard: React.FC<ZakatCardProps> = ({
       <CardContent className="space-y-3 pt-3 md:space-y-4 md:pt-4 flex-grow text-sm">
         <ZakatCardDetails
           penginput={record.penginput}
+          pembayaran={record.pembayaran}
           tanggal={record.tanggal}
           alamat={record.alamat}
         />

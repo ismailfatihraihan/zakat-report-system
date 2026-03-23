@@ -33,6 +33,7 @@ const ZakatTableRow: React.FC<ZakatTableRowProps> = ({
     <tr className="animate-slide-up hover:bg-secondary/20 transition-colors duration-150" style={{ animationDelay: `${index * 50}ms` }}>
       <td className="text-center align-middle sticky left-0 z-10 bg-white border border-border/60 font-medium">{index + 1}</td>
       <td className="text-center align-middle border border-border/60">{record.penginput}</td>
+      <td className="text-center align-middle border border-border/60">{record.pembayaran === "transfer" ? "Transfer" : "Cash"}</td>
       <td className="text-center align-middle border border-border/60">{formatDate(record.tanggal)}</td>
       <td className="align-middle border border-border/60 font-medium">{record.nama}</td>
       <td className="align-middle border border-border/60">{record.alamat}</td>

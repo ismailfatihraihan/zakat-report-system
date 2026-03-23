@@ -31,6 +31,7 @@ const ZakatTableContent: React.FC<ZakatTableContentProps> = ({
           <tr className="bg-secondary">
             <th className="text-center align-bottom sticky left-0 z-10 bg-secondary border border-border/60 font-medium text-foreground">No</th>
             <th className="text-center align-bottom border border-border/60 font-medium text-foreground">Penginput</th>
+            <th className="text-center align-bottom border border-border/60 font-medium text-foreground">Pembayaran</th>
             <th className="text-center align-bottom border border-border/60 font-medium text-foreground">Tanggal</th>
             <th className="text-center align-bottom border border-border/60 font-medium text-foreground">Nama</th>
             <th className="text-center align-bottom border border-border/60 font-medium text-foreground">Alamat</th>
@@ -44,6 +45,7 @@ const ZakatTableContent: React.FC<ZakatTableContentProps> = ({
           </tr>
           <tr className="bg-secondary/80">
             <th className="sticky left-0 z-10 bg-secondary/80 border border-border/60"></th>
+            <th className="border border-border/60"></th>
             <th className="border border-border/60"></th>
             <th className="border border-border/60"></th>
             <th className="border border-border/60"></th>
@@ -65,7 +67,7 @@ const ZakatTableContent: React.FC<ZakatTableContentProps> = ({
         <tbody>
           {data.length === 0 ? (
             <tr>
-              <td colSpan={17} className="text-center py-12 text-muted-foreground border border-border/60">
+              <td colSpan={18} className="text-center py-12 text-muted-foreground border border-border/60">
                 No records found
               </td>
             </tr>

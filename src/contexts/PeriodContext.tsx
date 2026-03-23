@@ -11,33 +11,107 @@ interface PeriodContextType {
   setFitrahRateUang: (rate: number) => void;
 }
 
-// Default period based on current Hijri year approximation
-// Ramadan 2026 ≈ 1448H
-const DEFAULT_PERIOD = "1448";
+const DEFAULT_PERIOD_FALLBACK = "1448";
 const DEFAULT_FITRAH_RATE_UANG = 37500;
+const PERIOD_STORAGE_KEY = "zakat_period";
+const PERIOD_MIGRATION_KEY = "zakat_period_auto_migrated_v1";
+const HIJRI_LOCALES = ["en-u-ca-islamic-umalqura", "en-u-ca-islamic"];
+
+const isValidPeriod = (value: string | null): value is string => {
+  return !!value && /^\d{3,5}$/.test(value);
+};
+
+const toPeriodNumber = (value: string): number => {
+  return Number.parseInt(value, 10);
+};
+
+const getStoredPeriod = (): string | null => {
+  const stored = localStorage.getItem(PERIOD_STORAGE_KEY);
+  return isValidPeriod(stored) ? stored : null;
+};
+
+const resolveInitialPeriod = (defaultPeriod: string): string => {
+  const storedPeriod = getStoredPeriod();
+
+  if (!storedPeriod) {
+    localStorage.setItem(PERIOD_STORAGE_KEY, defaultPeriod);
+    return defaultPeriod;
+  }
+
+  const hasMigrated = localStorage.getItem(PERIOD_MIGRATION_KEY) === "1";
+
+  if (!hasMigrated && toPeriodNumber(storedPeriod) < toPeriodNumber(defaultPeriod)) {
+    localStorage.setItem(PERIOD_STORAGE_KEY, defaultPeriod);
+    localStorage.setItem(PERIOD_MIGRATION_KEY, "1");
+    return defaultPeriod;
+  }
+
+  return storedPeriod;
+};
+
+const getUpcomingRamadanPeriod = (): string => {
+  try {
+    let parts: Intl.DateTimeFormatPart[] | null = null;
+
+    for (const locale of HIJRI_LOCALES) {
+      try {
+        parts = new Intl.DateTimeFormat(locale, {
+          year: "numeric",
+          month: "numeric",
+          timeZone: "UTC",
+        }).formatToParts(new Date());
+        break;
+      } catch {
+        // Try next locale.
+      }
+    }
+
+    if (!parts) {
+      return DEFAULT_PERIOD_FALLBACK;
+    }
+
+    const yearValue = parts.find((part) => part.type === "year")?.value;
+    const monthValue = parts.find((part) => part.type === "month")?.value;
+
+    const hijriYear = Number(yearValue);
+    const hijriMonth = Number(monthValue);
+
+    if (!Number.isFinite(hijriYear) || !Number.isFinite(hijriMonth)) {
+      return DEFAULT_PERIOD_FALLBACK;
+    }
+
+    // If Ramadan (month 9) has passed, prepare next Hijri year.
+    return hijriMonth > 9 ? String(hijriYear + 1) : String(hijriYear);
+  } catch {
+    return DEFAULT_PERIOD_FALLBACK;
+  }
+};
+
+const DEFAULT_PERIOD = getUpcomingRamadanPeriod();
 
 const getRateKey = (period: string) => `zakat_fitrah_rate_${period}`;
 
 const loadRate = (period: string): number => {
   const stored = localStorage.getItem(getRateKey(period));
-  return stored ? Number(stored) : DEFAULT_FITRAH_RATE_UANG;
+  const parsed = stored ? Number(stored) : NaN;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_FITRAH_RATE_UANG;
 };
 
 const PeriodContext = createContext<PeriodContextType | undefined>(undefined);
 
 export const PeriodProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentPeriod, setCurrentPeriod] = useState<string>(() => {
-    return localStorage.getItem("zakat_period") || DEFAULT_PERIOD;
+    return resolveInitialPeriod(DEFAULT_PERIOD);
   });
 
   const [fitrahRateUang, setFitrahRateUangState] = useState<number>(() => {
-    const period = localStorage.getItem("zakat_period") || DEFAULT_PERIOD;
+    const period = getStoredPeriod() || DEFAULT_PERIOD;
     return loadRate(period);
   });
 
   const handleSetPeriod = (period: string) => {
     setCurrentPeriod(period);
-    localStorage.setItem("zakat_period", period);
+    localStorage.setItem(PERIOD_STORAGE_KEY, period);
     setFitrahRateUangState(loadRate(period));
   };
 
@@ -58,9 +132,13 @@ export const PeriodProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       if (error) throw error;
 
       // Extract unique periods
-      const periods = [...new Set(data.map((r) => r.period))];
+      const periods = [...new Set(data.map((r) => r.period).filter(isValidPeriod))];
 
-      // Ensure the current/default period is always in the list
+      // Ensure active and default periods are always selectable.
+      if (!periods.includes(currentPeriod)) {
+        periods.unshift(currentPeriod);
+      }
+
       if (!periods.includes(DEFAULT_PERIOD)) {
         periods.unshift(DEFAULT_PERIOD);
       }

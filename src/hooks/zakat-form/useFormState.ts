@@ -10,6 +10,7 @@ export const useFormState = (initialData?: ZakatRecord, isEdit: boolean = false,
   const [formData, setFormData] = useState<ZakatFormData>({
     period: period,
     penginput: "",
+    pembayaran: "cash",
     tanggal: format(new Date(), "yyyy-MM-dd"),
     nama: "",
     alamat: "",
@@ -38,6 +39,7 @@ export const useFormState = (initialData?: ZakatRecord, isEdit: boolean = false,
       setFormData({
         period: initialData.period,
         penginput: initialData.penginput,
+        pembayaran: initialData.pembayaran ?? "cash",
         tanggal: format(new Date(initialData.tanggal), "yyyy-MM-dd"),
         nama: initialData.nama,
         alamat: initialData.alamat,
@@ -59,6 +61,16 @@ export const useFormState = (initialData?: ZakatRecord, isEdit: boolean = false,
       });
     }
   }, [initialData, isEdit]);
+
+  // Keep period in sync for new records when the active period changes.
+  useEffect(() => {
+    if (!isEdit) {
+      setFormData((prev) => ({
+        ...prev,
+        period,
+      }));
+    }
+  }, [period, isEdit]);
 
   // Effect to calculate zakat fitrah beras based on jiwa count
   useEffect(() => {
@@ -154,7 +166,9 @@ export const useFormState = (initialData?: ZakatRecord, isEdit: boolean = false,
   const handleReset = () => {
     if (isEdit && initialData) {
       setFormData({
+        period: initialData.period,
         penginput: initialData.penginput,
+        pembayaran: initialData.pembayaran ?? "cash",
         tanggal: format(new Date(initialData.tanggal), "yyyy-MM-dd"),
         nama: initialData.nama,
         alamat: initialData.alamat,
@@ -176,7 +190,9 @@ export const useFormState = (initialData?: ZakatRecord, isEdit: boolean = false,
       });
     } else {
       setFormData({
+        period,
         penginput: "",
+        pembayaran: "cash",
         tanggal: format(new Date(), "yyyy-MM-dd"),
         nama: "",
         alamat: "",

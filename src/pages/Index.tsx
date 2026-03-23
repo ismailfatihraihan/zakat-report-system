@@ -32,10 +32,12 @@ const Index: React.FC = () => {
   
   // Initialize sample data if needed
   useEffect(() => {
-    initializeWithSampleData().catch(err => {
-      console.error("Error initializing sample data:", err);
-    });
-  }, []);
+    if (import.meta.env.DEV) {
+      initializeWithSampleData(currentPeriod).catch(err => {
+        console.error("Error initializing sample data:", err);
+      });
+    }
+  }, [currentPeriod]);
   
   useEffect(() => {
     // Check for tab param in URL

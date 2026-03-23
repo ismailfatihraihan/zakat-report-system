@@ -56,6 +56,7 @@ const ZakatForm: React.FC<ZakatFormProps> = ({ initialData, isEdit = false }) =>
           {/* Basic Information Section */}
           <BasicInfoSection
             penginput={formData.penginput}
+            pembayaran={formData.pembayaran}
             tanggal={formData.tanggal}
             nama={formData.nama}
             alamat={formData.alamat}

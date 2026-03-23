@@ -1,8 +1,11 @@
 
+export type PaymentMethod = "cash" | "transfer";
+
 export interface ZakatRecord {
   id: string;
   period: string;
   penginput: string;
+  pembayaran: PaymentMethod;
   tanggal: string;
   nama: string;
   alamat: string;

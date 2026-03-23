@@ -8,6 +8,7 @@ export const mapDbRecordToZakatRecord = (data: any): ZakatRecord => {
     id: data.id,
     period: data.period,
     penginput: data.penginput,
+    pembayaran: data.pembayaran ?? "cash",
     tanggal: data.tanggal,
     nama: data.nama,
     alamat: data.alamat,
@@ -41,6 +42,7 @@ export const prepareRecordForDb = (formData: ZakatFormData) => {
   return {
     period: formData.period,
     penginput: formData.penginput,
+    pembayaran: formData.pembayaran,
     tanggal: formData.tanggal,
     nama: formData.nama,
     alamat: formData.alamat,
